@@ -42,6 +42,20 @@ public class showAll extends HttpServlet {
 		try {
 			st = conn.createStatement();
 			ResultSet res = st.executeQuery("");
+			/*
+			 * SELECT
+    PROBES_RELATIONS.ID AS REL_ID,
+    PROBES.ID AS P_ID,
+    PROBES.APP AS P_APP,
+    PROBES.TYPE AS P_TYPE,
+    DEVICES.NAME AS REL_S_NAME,
+    DEVICES.PORT AS REL_S_PORT,
+    DEVICES.NAME AS REL_D_NAME,
+    DEVICES.PORT AS REL_D_PORT
+FROM PROBES_RELATIONS, PROBES, DEVICES
+WHERE
+    PROBES_RELATIONS.PROBE_ID=PROBES.ID AND PROBES_RELATIONS.SOURCE_ID=DEVICES.ID;
+			 */
 			while(res.next()) {
 				allP = new AllProbesResult();
 				allP.setProbeRel(res.getInt("PROBE_RELATIONS.ID"));
