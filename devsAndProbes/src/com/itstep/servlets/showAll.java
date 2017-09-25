@@ -34,6 +34,18 @@ public class showAll extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Statement st = null;
+		String queryAll = "SELECT " + 
+				"PROBES_RELATIONS.ID AS REL_ID," + 
+				"PROBES.ID AS P_ID," + 
+				"PROBES.APP AS P_APP," + 
+				"PROBES.TYPE AS P_TYPE," + 
+				"DEVICES.NAME AS REL_S_NAME," + 
+				"DEVICES.PORT AS REL_S_PORT," + 
+				"DEVICES.NAME AS REL_D_NAME," + 
+				"DEVICES.PORT AS REL_D_PORT " + 
+				"FROM PROBES_RELATIONS, PROBES, DEVICES " + 
+				"WHERE " + 
+				"PROBES_RELATIONS.PROBE_ID=PROBES.ID AND PROBES_RELATIONS.SOURCE_ID=DEVICES.ID";
 		List<AllProbesResult> allProbes = new ArrayList<>();
 		AllProbesResult allP = null;
 		if(conn == null) {
@@ -41,31 +53,18 @@ public class showAll extends HttpServlet {
 		}
 		try {
 			st = conn.createStatement();
-			ResultSet res = st.executeQuery("");
-			/*
-			 * SELECT
-    PROBES_RELATIONS.ID AS REL_ID,
-    PROBES.ID AS P_ID,
-    PROBES.APP AS P_APP,
-    PROBES.TYPE AS P_TYPE,
-    DEVICES.NAME AS REL_S_NAME,
-    DEVICES.PORT AS REL_S_PORT,
-    DEVICES.NAME AS REL_D_NAME,
-    DEVICES.PORT AS REL_D_PORT
-FROM PROBES_RELATIONS, PROBES, DEVICES
-WHERE
-    PROBES_RELATIONS.PROBE_ID=PROBES.ID AND PROBES_RELATIONS.SOURCE_ID=DEVICES.ID;
-			 */
+			ResultSet res = st.executeQuery(queryAll);
+			
 			while(res.next()) {
 				allP = new AllProbesResult();
-				allP.setProbeRel(res.getInt("PROBE_RELATIONS.ID"));
-				allP.setProbeId(res.getInt("PROBES.ID"));
-				allP.setProbeApp(res.getString("PROBES.APP"));
-				allP.setProbeType(res.getString("PROBES.TYPE"));
-				allP.setProbeSourceDevName(res.getString("DEVICES.NAME"));
-				allP.setProbeSourceDevPort(res.getInt("DEVICES.PORT"));
-				allP.setProbeDestDevName(res.getString("DEVICES.NAME"));
-				allP.setProbeDestDevPort(res.getInt("DEVICES.PORT"));
+				allP.setProbeRel(res.getInt("REL_ID"));
+				allP.setProbeId(res.getInt("P_ID"));
+				allP.setProbeApp(res.getString("P_APP"));
+				allP.setProbeType(res.getString("P_TYPE"));
+				allP.setProbeSourceDevName(res.getString("REL_S_NAME"));
+				allP.setProbeSourceDevPort(res.getInt("REL_S_PORT"));
+				allP.setProbeDestDevName(res.getString("REL_D_NAME"));
+				allP.setProbeDestDevPort(res.getInt("REL_D_PORT"));
 				allProbes.add(allP);
 			}
 		} catch (Exception ex) { ex.printStackTrace(); }
