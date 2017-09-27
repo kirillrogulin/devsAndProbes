@@ -35,7 +35,12 @@ public class DefaultServlet extends HttpServlet {
 		Device d = null;
 		ResultSet res = null;
 		try {
-			res = DbService.executeSelect("SELECT * FROM DEVICES");
+			try {
+				res = DbService.executeSelect("SELECT * FROM DEVICES");
+			} catch (org.h2.jdbc.JdbcSQLException ex) {
+				DbService.firstJdbcRun();
+				res = DbService.executeSelect("SELECT * FROM DEVICES");
+			}
 			while (res.next()) {
 				d = new Device();
 				d.setId(res.getInt("ID"));
